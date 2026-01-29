@@ -60,9 +60,6 @@ const connections = [
 ];
 
 export function MatchingDashboard() {
-  const [selectedCandidate] = useState(candidate);
-  // Using selectedCandidate for modal display
-  void selectedCandidate;
   const [isConnecting, setIsConnecting] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
