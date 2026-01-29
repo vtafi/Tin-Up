@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Rocket,
+  Cpu,
   Download,
   Plus,
   Search,
@@ -129,15 +129,41 @@ export function ContentModeration() {
       {/* Top Navigation */}
       <header className="sticky top-0 z-50 w-full bg-white/75 backdrop-blur-md border-b border-slate-200/60">
         <div className="px-6 lg:px-10 py-3 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-4">
-            <div className="size-8 text-[#135bec]">
-              <Rocket className="w-8 h-8" />
+          <Link to="/" className="flex items-center gap-3">
+            <div className="text-[#135bec]">
+              <Cpu className="w-8 h-8" />
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900">
               Tin-Up <span className="text-slate-400 font-normal mx-2">/</span>{" "}
               Admin
             </h1>
           </Link>
+
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1">
+            <Link
+              to="/admin/dashboard"
+              className="px-4 py-2 text-sm font-medium text-[#4c669a] hover:text-[#0d121b] hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/admin/users"
+              className="px-4 py-2 text-sm font-medium text-[#4c669a] hover:text-[#0d121b] hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Users
+            </Link>
+            <span className="px-4 py-2 text-sm font-medium text-[#135bec] bg-[#ebf0fe] rounded-lg">
+              Content
+            </span>
+            <Link
+              to="/admin/settings"
+              className="px-4 py-2 text-sm font-medium text-[#4c669a] hover:text-[#0d121b] hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Settings
+            </Link>
+          </nav>
+
           <div className="flex items-center gap-3">
             <NotificationDropdown />
             <UserAvatarDropdown />

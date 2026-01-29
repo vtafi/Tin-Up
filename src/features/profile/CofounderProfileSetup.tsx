@@ -200,13 +200,10 @@ export function CofounderProfileSetup() {
               to="/"
               className="flex items-center gap-3 group cursor-pointer"
             >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300" />
-                <div className="relative text-white flex items-center justify-center p-2 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 shadow-inner border border-white/20">
-                  <Cpu className="w-6 h-6" />
-                </div>
+              <div className="text-[#135bec]">
+                <Cpu className="w-8 h-8" />
               </div>
-              <span className="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
+              <span className="text-xl font-bold tracking-tight text-gray-900">
                 Tin-Up
               </span>
             </Link>

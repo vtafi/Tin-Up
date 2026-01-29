@@ -227,11 +227,11 @@ export function StartupExplore() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <div className="flex items-center justify-center size-8 rounded-lg bg-[#135bec] text-white">
-                <Cpu className="w-5 h-5" />
+            <Link to="/" className="flex items-center gap-3">
+              <div className="text-[#135bec]">
+                <Cpu className="w-8 h-8" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-slate-900">
+              <span className="text-xl font-bold tracking-tight text-slate-900">
                 Tin-Up
               </span>
             </Link>

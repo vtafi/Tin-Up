@@ -92,35 +92,35 @@ export function AlgorithmConfigPage() {
         {/* Top Navigation (Frosted Glass) */}
         <header className="sticky top-0 z-50 w-full border-b border-[#e7ebf3] bg-white/85 backdrop-blur-md px-4 lg:px-10 py-3 transition-all duration-300">
           <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-4 text-[#0d121b]">
-              <div className="size-8 flex items-center justify-center text-[#135bec]">
-                <Cpu className="w-7 h-7" />
+            <Link to="/" className="flex items-center gap-3 text-[#0d121b]">
+              <div className="text-[#135bec]">
+                <Cpu className="w-8 h-8" />
               </div>
-              <h2 className="text-[#0d121b] text-lg font-bold leading-tight tracking-tight">
+              <h2 className="text-[#0d121b] text-xl font-bold leading-tight tracking-tight">
                 Tin-Up Admin
               </h2>
             </Link>
             <div className="flex flex-1 justify-end gap-8 items-center">
-              <nav className="hidden md:flex items-center gap-9">
+              <nav className="hidden md:flex items-center gap-1">
                 <Link
                   to="/admin/dashboard"
-                  className="text-[#4c669a] hover:text-[#135bec] text-sm font-medium leading-normal transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[#4c669a] hover:text-[#0d121b] hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/admin/users"
-                  className="text-[#4c669a] hover:text-[#135bec] text-sm font-medium leading-normal transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[#4c669a] hover:text-[#0d121b] hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   Users
                 </Link>
                 <Link
                   to="/admin/content"
-                  className="text-[#4c669a] hover:text-[#135bec] text-sm font-medium leading-normal transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[#4c669a] hover:text-[#0d121b] hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  Matching
+                  Content
                 </Link>
-                <span className="text-[#135bec] text-sm font-bold leading-normal">
+                <span className="px-4 py-2 text-sm font-medium text-[#135bec] bg-[#ebf0fe] rounded-lg">
                   Settings
                 </span>
               </nav>

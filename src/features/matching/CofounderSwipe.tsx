@@ -126,8 +126,8 @@ export function CofounderSwipe() {
               to="/"
               className="flex items-center gap-3 group cursor-pointer"
             >
-              <div className="size-9 bg-[#135bec] text-white rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(19,91,236,0.3)] transition-transform group-hover:scale-105">
-                <Cpu className="w-6 h-6" />
+              <div className="text-[#135bec]">
+                <Cpu className="w-8 h-8" />
               </div>
               <h2 className="text-xl font-bold tracking-tight text-slate-900">
                 Tin-Up

@@ -122,8 +122,8 @@ export function MatchingDashboard() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
-              <div className="size-8 text-[#135bec] bg-[#135bec]/10 rounded-lg flex items-center justify-center">
-                <Cpu className="w-5 h-5" />
+              <div className="text-[#135bec]">
+                <Cpu className="w-8 h-8" />
               </div>
               <h1 className="text-xl font-bold tracking-tight text-gray-900">
                 Tin-Up
@@ -187,11 +187,10 @@ export function MatchingDashboard() {
               </span>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
-              Co-Founder Compatibility
+              Talent Matching
             </h2>
             <p className="text-slate-500 mt-1">
-              AI-driven analysis of skills, personality, and working style
-              synergy.
+              AI-driven analysis to find your ideal co-founder match.
             </p>
           </div>
           <div className="flex gap-3">

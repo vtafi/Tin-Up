@@ -99,8 +99,8 @@ export function RoleSelectionPage() {
             to="/"
             className="flex items-center gap-3 text-gray-900 group cursor-pointer"
           >
-            <div className="size-8 rounded-lg bg-[#135bec]/10 flex items-center justify-center text-[#135bec] transition-colors group-hover:bg-[#135bec] group-hover:text-white">
-              <Cpu className="w-5 h-5" />
+            <div className="text-[#135bec]">
+              <Cpu className="w-8 h-8" />
             </div>
             <h2 className="text-xl font-bold tracking-tight">Tin-Up</h2>
           </Link>

@@ -20,7 +20,11 @@ import {
 } from "@/features/matching";
 
 // Profile
-import { CofounderProfileSetup, CofounderProfile } from "@/features/profile";
+import {
+  CofounderProfileSetup,
+  CofounderProfile,
+  FounderProfile,
+} from "@/features/profile";
 
 // Admin
 import {
@@ -55,10 +59,12 @@ function App() {
 
             {/* Founder Routes */}
             <Route path="/founder/setup" element={<ProjectSetupPage />} />
+            <Route path="/founder/profile" element={<FounderProfile />} />
             <Route path="/founder/project/:id" element={<ProjectDetails />} />
             <Route path="/founder/matching" element={<MatchingDashboard />} />
             <Route path="/founder/projects" element={<MatchingDashboard />} />
             <Route path="/founder/explore" element={<MatchingDashboard />} />
+            <Route path="/founder/network" element={<MatchingDashboard />} />
             <Route path="/founder/messages" element={<MessagesPage />} />
             <Route path="/founder/workspace" element={<MessagesPage />} />
 
@@ -71,6 +77,7 @@ function App() {
             <Route path="/co-founder/explore" element={<StartupExplore />} />
             <Route path="/co-founder/swipe" element={<CofounderSwipe />} />
             <Route path="/co-founder/matching" element={<SwipeMatching />} />
+            <Route path="/co-founder/network" element={<StartupExplore />} />
             <Route path="/co-founder/messages" element={<MessagesPage />} />
             <Route path="/co-founder/workspace" element={<MessagesPage />} />
 

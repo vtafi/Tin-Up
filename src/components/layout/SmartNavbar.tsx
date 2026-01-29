@@ -17,6 +17,7 @@ import {
   Menu,
   X,
   Bell,
+  Cpu,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, useToast } from "@/components/common";
@@ -34,13 +35,23 @@ const navConfigs: Record<UserRole, NavItem[]> = {
     { label: "Explore", href: "/founder/explore", icon: Compass },
     { label: "My Projects", href: "/founder/projects", icon: FolderKanban },
     { label: "Network", href: "/founder/network", icon: Users },
-    { label: "Messages", href: "/messages", icon: MessageSquare, badge: 3 },
+    {
+      label: "Messages",
+      href: "/founder/messages",
+      icon: MessageSquare,
+      badge: 3,
+    },
   ],
   CO_FOUNDER: [
     { label: "Explore", href: "/co-founder/explore", icon: Compass },
     { label: "My Profile", href: "/co-founder/profile", icon: User },
     { label: "Network", href: "/co-founder/network", icon: Users },
-    { label: "Messages", href: "/messages", icon: MessageSquare, badge: 2 },
+    {
+      label: "Messages",
+      href: "/co-founder/messages",
+      icon: MessageSquare,
+      badge: 2,
+    },
   ],
   ADMIN: [
     { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -357,9 +368,14 @@ function MobileMenu({
           >
             <div className="p-4 border-b border-gray-100 flex items-center justify-between">
               {/* Stitch primary #135bec */}
-              <span className="text-xl font-bold bg-gradient-to-r from-[#135bec] via-purple-500 to-orange-500 bg-clip-text text-transparent">
-                Tin-Up
-              </span>
+              <div className="flex items-center gap-3">
+                <div className="text-[#135bec]">
+                  <Cpu className="w-8 h-8" />
+                </div>
+                <span className="text-xl font-bold tracking-tight text-gray-900">
+                  Tin-Up
+                </span>
+              </div>
               <button
                 onClick={onClose}
                 className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
@@ -439,11 +455,11 @@ export function SmartNavbar() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               {/* Logo - Stitch primary #135bec */}
-              <Link to="/" className="flex items-center gap-2">
-                <div className="w-9 h-9 bg-gradient-to-br from-[#135bec] via-purple-500 to-orange-500 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">TU</span>
+              <Link to="/" className="flex items-center gap-3">
+                <div className="text-[#135bec]">
+                  <Cpu className="w-8 h-8" />
                 </div>
-                <span className="hidden sm:block text-xl font-bold bg-gradient-to-r from-[#135bec] via-purple-500 to-orange-500 bg-clip-text text-transparent">
+                <span className="hidden sm:block text-xl font-bold tracking-tight text-gray-900">
                   Tin-Up
                 </span>
               </Link>

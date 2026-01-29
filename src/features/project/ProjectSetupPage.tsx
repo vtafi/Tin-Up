@@ -111,10 +111,10 @@ export function ProjectSetupPage() {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
-              <div className="flex items-center justify-center size-9 bg-gradient-to-br from-[#135bec] to-blue-600 text-white rounded-lg shadow-lg shadow-blue-500/20">
-                <Cpu className="w-5 h-5" />
+              <div className="text-[#135bec]">
+                <Cpu className="w-8 h-8" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-gray-900">
+              <span className="text-xl font-bold tracking-tight text-gray-900">
                 Tin-Up
               </span>
             </Link>

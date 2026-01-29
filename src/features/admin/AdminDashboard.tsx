@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Rocket,
+  Cpu,
   Search,
   MoreHorizontal,
   MoreVertical,
@@ -87,8 +87,8 @@ export function AdminDashboard() {
       <header className="sticky top-0 z-50 w-full border-b border-[#e7ebf3] bg-white/80 backdrop-blur-md">
         <div className="px-6 lg:px-12 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="size-8 text-[#135bec] flex items-center justify-center">
-              <Rocket className="w-7 h-7" />
+            <div className="text-[#135bec]">
+              <Cpu className="w-8 h-8" />
             </div>
             <h1 className="text-xl font-bold tracking-tight text-[#0d121b]">
               Tin-Up<span className="text-[#135bec]">Admin</span>
