@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -7,7 +7,6 @@ import {
   Eye,
   EyeOff,
   Linkedin,
-  User,
   Check,
   Star,
   Cpu,
@@ -19,7 +18,6 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
   const { login } = useAuth();
   const { showToast } = useToast();
 
@@ -37,53 +35,17 @@ export function LoginPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Demo login logic
-    if (email.includes("founder") && !email.includes("co")) {
-      login({
-        id: "1",
-        email,
-        name: "Demo Founder",
-        role: "FOUNDER",
-        avatar: "",
-      });
+    try {
+      await login(email, password);
       showToast({
         type: "success",
         title: "Welcome back!",
-        message: "Logged in as Founder",
+        message: "Logged in successfully",
       });
-      navigate("/founder/profile");
-    } else if (email.includes("cofounder") || email.includes("co-founder")) {
-      login({
-        id: "2",
-        email,
-        name: "Demo Co-Founder",
-        role: "CO_FOUNDER",
-        avatar: "",
-      });
-      showToast({
-        type: "success",
-        title: "Welcome back!",
-        message: "Logged in as Co-Founder",
-      });
-      navigate("/co-founder/explore");
-    } else if (email.includes("admin")) {
-      login({
-        id: "3",
-        email,
-        name: "Admin User",
-        role: "ADMIN",
-        avatar: "",
-      });
-      showToast({
-        type: "success",
-        title: "Welcome back!",
-        message: "Logged in as Admin",
-      });
-      navigate("/admin/dashboard");
-    } else {
+    } catch {
       showToast({
         type: "error",
         title: "Login Failed",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -22,11 +22,10 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register } = useAuth();
   const { showToast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!agreedToTerms) {
@@ -47,20 +46,20 @@ export function RegisterPage() {
       return;
     }
 
-    // Demo registration - auto login
-    login({
-      id: "new-user",
-      email,
-      name: fullName,
-      role: "FOUNDER",
-      avatar: "",
-    });
-    showToast({
-      type: "success",
-      title: "Welcome to Tin-Up!",
-      message: "Account created successfully.",
-    });
-    navigate("/role-selection");
+    try {
+      await register(email, password, fullName);
+      showToast({
+        type: "success",
+        title: "Welcome to Tin-Up!",
+        message: "Account created successfully.",
+      });
+    } catch {
+      showToast({
+        type: "error",
+        title: "Registration Failed",
+        message: "Could not create account. Please try again.",
+      });
+    }
   };
 
   return (
