@@ -2,3 +2,4 @@
 export { MatchingDashboard } from "./MatchingDashboard";
 export { SwipeMatching } from "./SwipeMatching";
 export { StartupExplore } from "./StartupExplore";
+export { CofounderSwipe } from "./CofounderSwipe";

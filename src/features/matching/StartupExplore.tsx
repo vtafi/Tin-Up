@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search,
-  Bell,
   Cpu,
   Bookmark,
   MapPin,
@@ -12,6 +11,11 @@ import {
   CreditCard,
   LayoutGrid,
 } from "lucide-react";
+import {
+  useToast,
+  NotificationDropdown,
+  UserAvatarDropdown,
+} from "@/components/common";
 
 const startups = [
   {
@@ -151,8 +155,13 @@ const getSkillColor = (color: string) => {
 
 export function StartupExplore() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilters, setActiveFilters] = useState<string[]>(["All Industries"]);
+  const [activeFilters, setActiveFilters] = useState<string[]>([
+    "All Industries",
+  ]);
   const [viewMode, setViewMode] = useState<"ai" | "swipe" | "grid">("grid");
+  const [savedStartups, setSavedStartups] = useState<string[]>([]);
+  const [connectingTo, setConnectingTo] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const toggleFilter = (label: string) => {
     if (label === "All Industries") {
@@ -164,6 +173,42 @@ export function StartupExplore() {
           return newFilters.filter((f) => f !== label);
         }
         return [...newFilters, label];
+      });
+    }
+  };
+
+  const handleConnect = async (startup: (typeof startups)[0]) => {
+    setConnectingTo(startup.id);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setConnectingTo(null);
+
+    showToast({
+      type: "success",
+      title: "Connection Request Sent!",
+      message: `You've requested to connect with ${startup.name}.`,
+      duration: 4000,
+    });
+  };
+
+  const handleSaveStartup = (startup: (typeof startups)[0]) => {
+    const isSaved = savedStartups.includes(startup.id);
+
+    if (isSaved) {
+      setSavedStartups((prev) => prev.filter((id) => id !== startup.id));
+      showToast({
+        type: "info",
+        title: "Removed from Saved",
+        message: `${startup.name} has been removed from your saved list.`,
+        duration: 3000,
+      });
+    } else {
+      setSavedStartups((prev) => [...prev, startup.id]);
+      showToast({
+        type: "success",
+        title: "Saved!",
+        message: `${startup.name} has been saved to your list.`,
+        duration: 3000,
       });
     }
   };
@@ -217,17 +262,9 @@ export function StartupExplore() {
             </nav>
 
             {/* User Profile */}
-            <div className="flex items-center gap-4">
-              <button className="text-slate-500 hover:text-[#135bec] transition-colors">
-                <Bell className="w-6 h-6" />
-              </button>
-              <div
-                className="size-9 rounded-full bg-cover bg-center ring-2 ring-white shadow-sm"
-                style={{
-                  backgroundImage:
-                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAAbhnnAq7nLtbGnHt6xu_KpHcSdaf6brwwp8rrBGGi03AAomDnXrZzb9z5V_42PuUSJwb4FEkRad_bjLw1HIrZAu6T08PGH0LsYPv2iskx6Wu3gCmwUMvoNN8QCmYcCMsaJKgOqnVc0mRsacWJTpt9UnHzLj9YWSDAT5rv6aPqmWyua6R_dcYeL0cDrokgqK8gAt3NVUvXwWicpgSIfOwPlaJFc2rbV1S7JXOpr7Ht5jSpE5g11lEUvVB0C4w3cIcxalr09ixH2Yg')",
-                }}
-              />
+            <div className="flex items-center gap-3">
+              <NotificationDropdown />
+              <UserAvatarDropdown />
             </div>
           </div>
         </div>
@@ -387,8 +424,17 @@ export function StartupExplore() {
                     Featured
                   </span>
                 ) : (
-                  <button className="text-slate-400 hover:text-[#135bec] transition-colors">
-                    <Bookmark className="w-5 h-5" />
+                  <button
+                    onClick={() => handleSaveStartup(startup)}
+                    className={`transition-colors ${
+                      savedStartups.includes(startup.id)
+                        ? "text-amber-500"
+                        : "text-slate-400 hover:text-[#135bec]"
+                    }`}
+                  >
+                    <Bookmark
+                      className={`w-5 h-5 ${savedStartups.includes(startup.id) ? "fill-current" : ""}`}
+                    />
                   </button>
                 )}
               </div>
@@ -416,7 +462,7 @@ export function StartupExplore() {
                     <span
                       key={skill.label}
                       className={`px-2.5 py-1 rounded-md text-xs font-medium border ${getSkillColor(
-                        skill.color
+                        skill.color,
                       )}`}
                     >
                       {skill.label}
@@ -424,14 +470,25 @@ export function StartupExplore() {
                   ))}
                 </div>
                 <button
-                  className={`w-full mt-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
+                  onClick={() => handleConnect(startup)}
+                  disabled={connectingTo === startup.id}
+                  className={`w-full mt-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                     startup.featured
                       ? "bg-white text-[#135bec] hover:bg-blue-50 font-semibold"
                       : "bg-[#135bec]/10 text-[#135bec] hover:bg-[#135bec] hover:text-white group-hover:bg-[#135bec] group-hover:text-white"
                   }`}
                 >
-                  Connect
-                  <ArrowRight className="w-4 h-4" />
+                  {connectingTo === startup.id ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin" />
+                      Connecting...
+                    </>
+                  ) : (
+                    <>
+                      Connect
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </motion.div>

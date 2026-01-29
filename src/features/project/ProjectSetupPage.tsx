@@ -6,7 +6,6 @@ import {
   Sparkles,
   Plus,
   ArrowRight,
-  Bell,
   Cpu,
   BadgeCheck,
   Eye,
@@ -16,6 +15,11 @@ import {
   Bot,
   FileEdit,
 } from "lucide-react";
+import {
+  useToast,
+  NotificationDropdown,
+  UserAvatarDropdown,
+} from "@/components/common";
 
 const roles = [
   { id: "cofounder", label: "Co-Founder", selected: true },
@@ -27,6 +31,7 @@ const roles = [
 export function ProjectSetupPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
 
   // Form state
   const [projectName, setProjectName] = useState("");
@@ -39,7 +44,7 @@ export function ProjectSetupPage() {
     setSelectedRoles((prev) =>
       prev.includes(roleId)
         ? prev.filter((r) => r !== roleId)
-        : [...prev, roleId]
+        : [...prev, roleId],
     );
   };
 
@@ -47,16 +52,46 @@ export function ProjectSetupPage() {
     const file = e.target.files?.[0];
     if (file) {
       setPitchDeck(file);
+      showToast({
+        type: "success",
+        title: "File Uploaded",
+        message: `${file.name} has been uploaded successfully.`,
+        duration: 3000,
+      });
     }
   };
 
   const handlePublish = async () => {
+    // Validate form
+    if (!projectName.trim()) {
+      showToast({
+        type: "error",
+        title: "Missing Project Name",
+        message: "Please enter a project name to continue.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    showToast({
+      type: "success",
+      title: "Project Published!",
+      message: "Your project is now live and visible to co-founders.",
+      duration: 4000,
+    });
+
     navigate("/founder/matching");
   };
 
   const handleSaveDraft = () => {
+    showToast({
+      type: "info",
+      title: "Draft Saved",
+      message: "Your project has been saved as a draft.",
+      duration: 3000,
+    });
     // Save draft logic
     console.log("Draft saved");
   };
@@ -113,17 +148,9 @@ export function ProjectSetupPage() {
             </nav>
 
             {/* Profile */}
-            <div className="flex items-center gap-4">
-              <button className="p-2 text-slate-500 hover:text-slate-700 transition-colors">
-                <Bell className="w-5 h-5" />
-              </button>
-              <div
-                className="h-9 w-9 rounded-full bg-slate-200 bg-cover bg-center border-2 border-white shadow-sm"
-                style={{
-                  backgroundImage:
-                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQinPsrk7SPEAao5XTqWqLLZH_NWPU4ejTuQY03iiEyou-XMArMNRNF9rOVSy6p-yPSqeMKm6OoAgykf8XAWlFAw44FmKM98bDi-zY7S3CCsiXNvrlAgNdQGzhxP416LBMbF8ZrhHKYUevbYVi40MNaN1_38lmd6HVdSPm0rJUnQ2PezKUjwhN-KF-5eq6CJlMNZLJcx4OIa1C055-1ql8p4-xrqHC0oGwIyae2uifAdTupNN3DeDMuMfpuNHHBLQHgQxrlXC2qKI')",
-                }}
-              />
+            <div className="flex items-center gap-3">
+              <NotificationDropdown />
+              <UserAvatarDropdown />
             </div>
           </div>
         </div>

@@ -2,19 +2,33 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Rocket, Puzzle, ArrowRight, Cpu } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/common";
 import type { UserRole } from "@/types";
 
 export function RoleSelectionPage() {
   const { setUserRole } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSelectRole = (role: UserRole) => {
     setUserRole(role);
 
-    // Navigate to the appropriate setup page
+    // Show toast and navigate to the appropriate setup page
     if (role === "FOUNDER") {
+      showToast({
+        type: "info",
+        title: "Founder Role Selected",
+        message: "Let's set up your startup project!",
+        duration: 3000,
+      });
       navigate("/founder/setup");
     } else {
+      showToast({
+        type: "info",
+        title: "Co-founder Role Selected",
+        message: "Let's build your profile!",
+        duration: 3000,
+      });
       navigate("/co-founder/profile/setup");
     }
   };

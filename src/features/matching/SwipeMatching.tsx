@@ -16,7 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { SmartNavbar } from "@/components/layout";
-import { Button, Badge, Modal } from "@/components/common";
+import { Button, Badge, Modal, useToast } from "@/components/common";
 
 interface StartupCard {
   id: string;
@@ -345,6 +345,7 @@ export function SwipeMatching() {
   const [matchedStartup, setMatchedStartup] = useState<StartupCard | null>(
     null,
   );
+  const { showToast } = useToast();
 
   const handleSwipe = (direction: "left" | "right" | "up") => {
     if (cards.length === 0) return;
@@ -353,19 +354,58 @@ export function SwipeMatching() {
     setHistory([currentCard, ...history]);
     setCards(cards.slice(1));
 
+    // Show feedback based on direction
+    if (direction === "left") {
+      showToast({
+        type: "info",
+        title: "Passed",
+        message: `You passed on ${currentCard.name}`,
+        duration: 2000,
+      });
+    } else if (direction === "up") {
+      showToast({
+        type: "success",
+        title: "Super Liked!",
+        message: `You super liked ${currentCard.name}!`,
+        duration: 2000,
+      });
+    }
+
     // Simulate match on right swipe or super like (30% chance)
     if ((direction === "right" || direction === "up") && Math.random() > 0.7) {
       setMatchedStartup(currentCard);
       setShowMatch(true);
+    } else if (direction === "right") {
+      showToast({
+        type: "success",
+        title: "Liked!",
+        message: `You liked ${currentCard.name}`,
+        duration: 2000,
+      });
     }
   };
 
   const handleUndo = () => {
-    if (history.length === 0) return;
+    if (history.length === 0) {
+      showToast({
+        type: "warning",
+        title: "No Actions to Undo",
+        message: "There are no previous actions to undo.",
+        duration: 2000,
+      });
+      return;
+    }
 
     const lastCard = history[0];
     setCards([lastCard, ...cards]);
     setHistory(history.slice(1));
+
+    showToast({
+      type: "info",
+      title: "Undo Successful",
+      message: `${lastCard.name} has been restored.`,
+      duration: 2000,
+    });
   };
 
   return (

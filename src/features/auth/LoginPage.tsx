@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, Headphones, Cpu } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/common";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export function LoginPage() {
 
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,9 +22,42 @@ export function LoginPage() {
 
     try {
       await login(email, password);
-      navigate("/");
+
+      // Determine redirect path based on email (role)
+      let redirectPath = "/";
+      let welcomeMessage = "Welcome back!";
+
+      if (email.includes("cofounder") || email.includes("co-founder")) {
+        redirectPath = "/co-founder/explore";
+        welcomeMessage = "Welcome to Co-founder Dashboard!";
+      } else if (email.includes("founder")) {
+        redirectPath = "/founder/matching";
+        welcomeMessage = "Welcome to Founder Dashboard!";
+      } else if (email.includes("admin")) {
+        redirectPath = "/admin/dashboard";
+        welcomeMessage = "Welcome to Admin Panel!";
+      } else {
+        // Default to co-founder
+        redirectPath = "/co-founder/explore";
+        welcomeMessage = "Welcome to Tin-Up!";
+      }
+
+      showToast({
+        type: "success",
+        title: "Login Successful",
+        message: welcomeMessage,
+        duration: 3000,
+      });
+
+      navigate(redirectPath);
     } catch {
       setError("Invalid email or password");
+      showToast({
+        type: "error",
+        title: "Login Failed",
+        message: "Please check your credentials and try again.",
+        duration: 5000,
+      });
     }
   };
 

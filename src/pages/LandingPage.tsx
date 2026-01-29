@@ -1,16 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Rocket,
-  Mail,
-  ArrowRight,
-  Quote,
-  Search,
-  Globe,
-  AtSign,
-  Network,
-} from "lucide-react";
+import { Mail, ArrowRight, Quote, Search, Network } from "lucide-react";
 import { SmartNavbar, Footer } from "@/components/layout";
 
 export function LandingPage() {
@@ -54,8 +45,7 @@ export function LandingPage() {
 
             {/* Headline */}
             <h1 className="text-gray-900 text-5xl sm:text-6xl md:text-7xl font-black leading-tight tracking-tight">
-              Connect.{" "}
-              <br className="sm:hidden" />
+              Connect. <br className="sm:hidden" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#135bec] to-purple-600">
                 Co-found.
               </span>{" "}
@@ -151,8 +141,7 @@ export function LandingPage() {
                   to="/stories"
                   className="text-white text-sm font-medium mt-2 hover:underline flex items-center gap-1"
                 >
-                  Read the case study{" "}
-                  <ArrowRight className="w-4 h-4" />
+                  Read the case study <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </motion.div>

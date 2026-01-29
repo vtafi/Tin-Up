@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  Bell,
   Cpu,
   Download,
   Share2,
@@ -16,6 +15,13 @@ import {
   Briefcase,
   MoreHorizontal,
 } from "lucide-react";
+import {
+  useToast,
+  Modal,
+  Button,
+  NotificationDropdown,
+  UserAvatarDropdown,
+} from "@/components/common";
 
 // Mock candidate data
 const candidate = {
@@ -54,11 +60,62 @@ const connections = [
 ];
 
 export function MatchingDashboard() {
-  const [, setSelectedCandidate] = useState(candidate);
+  const [selectedCandidate] = useState(candidate);
+  // Using selectedCandidate for modal display
+  void selectedCandidate;
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const { showToast } = useToast();
 
   // Calculate stroke-dashoffset for circular progress (95% = 502 * 0.05 = ~25)
   const circumference = 2 * Math.PI * 80; // ~502
   const strokeDashoffset = circumference * (1 - candidate.matchScore / 100);
+
+  const handleConnect = async () => {
+    setIsConnecting(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsConnecting(false);
+    showToast({
+      type: "success",
+      title: "Connection Request Sent!",
+      message: `You've sent a connection request to ${candidate.name}.`,
+      duration: 4000,
+    });
+  };
+
+  const handleSaveForLater = () => {
+    setIsSaved(!isSaved);
+    showToast({
+      type: isSaved ? "info" : "success",
+      title: isSaved ? "Removed from Saved" : "Saved for Later",
+      message: isSaved
+        ? `${candidate.name} has been removed from your saved list.`
+        : `${candidate.name} has been saved to your list.`,
+      duration: 3000,
+    });
+  };
+
+  const handleExportReport = () => {
+    showToast({
+      type: "info",
+      title: "Exporting Report",
+      message: "Your compatibility report is being generated...",
+      duration: 3000,
+    });
+  };
+
+  const handleShareProfile = () => {
+    // Copy profile link to clipboard
+    navigator.clipboard?.writeText(window.location.href);
+    showToast({
+      type: "success",
+      title: "Link Copied!",
+      message: "Profile link has been copied to clipboard.",
+      duration: 3000,
+    });
+  };
 
   return (
     <div className="bg-[#f6f6f8] text-gray-900 min-h-screen flex flex-col overflow-x-hidden selection:bg-[#135bec] selection:text-white">
@@ -106,18 +163,9 @@ export function MatchingDashboard() {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3">
-              <button className="flex items-center justify-center size-10 rounded-full hover:bg-slate-100 text-slate-600 transition-colors relative">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white" />
-              </button>
+              <NotificationDropdown />
               <div className="h-8 w-[1px] bg-slate-200 mx-1" />
-              <div
-                className="size-9 rounded-full bg-cover bg-center border border-slate-200 cursor-pointer"
-                style={{
-                  backgroundImage:
-                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBx-p4-CjnuaGijYgm3xWh9216gGnLasKlLuKUhXEvfwhmoKisPAyT2BupQNCq_tN2LXig-1WKTcqp4tJnkv3wTmgWWVRxN4SvQiCuIihLa_IoeK0CW_S3nDZEYSz65kljekPizvdL5ueeGSWl42esOCi__o_bHRUdxmM6JUrkZn2oRMSgyGNnccCOb2TkLWS4XM_dXxlK9atDggOJfZicLGkRvqLzOpCIDZvaSGbX0HJ5hsLoWb4Oq-gTtyDKaMdcHZ_cJa4oHnqo')",
-                }}
-              />
+              <UserAvatarDropdown />
             </div>
           </div>
         </div>
@@ -150,11 +198,17 @@ export function MatchingDashboard() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm text-slate-700">
+            <button
+              onClick={handleExportReport}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm text-slate-700"
+            >
               <Download className="w-5 h-5" />
               Export Report
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900 text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-sm">
+            <button
+              onClick={handleShareProfile}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900 text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-sm"
+            >
               <Share2 className="w-5 h-5" />
               Share Profile
             </button>
@@ -241,7 +295,10 @@ export function MatchingDashboard() {
                 </div>
               </div>
 
-              <button className="mt-6 w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-colors">
+              <button
+                onClick={() => setShowProfileModal(true)}
+                className="mt-6 w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-colors"
+              >
                 View Full Profile
               </button>
             </motion.div>
@@ -508,7 +565,9 @@ export function MatchingDashboard() {
                   <Sparkles className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg mb-1">AI Analysis Insight</h4>
+                  <h4 className="font-bold text-lg mb-1">
+                    AI Analysis Insight
+                  </h4>
                   <p className="text-blue-50 text-sm leading-relaxed">
                     Strong technical complementarity detected. Your product
                     background bridges the gap with Minh's deep system
@@ -575,13 +634,30 @@ export function MatchingDashboard() {
               </p>
 
               <div className="flex flex-col gap-3 w-full relative z-10">
-                <button className="w-full py-3 rounded-xl bg-[#135bec] hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2">
-                  <Handshake className="w-5 h-5" />
-                  Connect Now
+                <button
+                  onClick={handleConnect}
+                  disabled={isConnecting}
+                  className="w-full py-3 rounded-xl bg-[#135bec] hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
+                >
+                  {isConnecting ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <Handshake className="w-5 h-5" />
+                  )}
+                  {isConnecting ? "Connecting..." : "Connect Now"}
                 </button>
-                <button className="w-full py-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold transition-all flex items-center justify-center gap-2">
-                  <Bookmark className="w-5 h-5" />
-                  Save for Later
+                <button
+                  onClick={handleSaveForLater}
+                  className={`w-full py-3 rounded-xl border font-semibold transition-all flex items-center justify-center gap-2 ${
+                    isSaved
+                      ? "bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100"
+                      : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                  }`}
+                >
+                  <Bookmark
+                    className={`w-5 h-5 ${isSaved ? "fill-current" : ""}`}
+                  />
+                  {isSaved ? "Saved" : "Save for Later"}
                 </button>
               </div>
             </motion.div>
@@ -668,6 +744,114 @@ export function MatchingDashboard() {
           </motion.div>
         </div>
       </main>
+
+      {/* Profile Modal */}
+      <Modal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        title={`${candidate.name}'s Full Profile`}
+        size="lg"
+      >
+        <div className="space-y-6">
+          {/* Profile Header */}
+          <div className="flex items-start gap-4">
+            <div
+              className="w-20 h-20 rounded-2xl bg-cover bg-center shrink-0"
+              style={{ backgroundImage: `url("${candidate.avatar}")` }}
+            />
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">
+                {candidate.name}
+              </h3>
+              <p className="text-slate-600">{candidate.title}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <MapPin className="w-4 h-4 text-slate-400" />
+                <span className="text-sm text-slate-500">
+                  {candidate.location}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-slate-50 rounded-xl p-4 text-center">
+              <p className="text-2xl font-bold text-[#135bec]">
+                {candidate.experience}
+              </p>
+              <p className="text-xs text-slate-500 mt-1">Experience</p>
+            </div>
+            <div className="bg-slate-50 rounded-xl p-4 text-center">
+              <p className="text-2xl font-bold text-[#135bec]">
+                {candidate.matchScore}%
+              </p>
+              <p className="text-xs text-slate-500 mt-1">Match Score</p>
+            </div>
+            <div className="bg-slate-50 rounded-xl p-4 text-center">
+              <div className="flex items-center justify-center gap-1">
+                <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                <span className="text-2xl font-bold text-gray-900">
+                  {candidate.rating}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">Rating</p>
+            </div>
+          </div>
+
+          {/* Skills */}
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              Technical Skills
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {candidate.skills.map((skill) => (
+                <span
+                  key={skill}
+                  className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Education */}
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">Education</h4>
+            <p className="text-slate-600">{candidate.education}</p>
+          </div>
+
+          {/* Looking For */}
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">Looking For</h4>
+            <p className="text-slate-600">{candidate.lookingFor}</p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-4 border-t border-slate-100">
+            <Button
+              onClick={() => {
+                setShowProfileModal(false);
+                handleConnect();
+              }}
+              className="flex-1"
+              disabled={isConnecting}
+            >
+              {isConnecting ? "Connecting..." : "Connect Now"}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowProfileModal(false);
+                handleSaveForLater();
+              }}
+              className="flex-1"
+            >
+              {isSaved ? "Saved" : "Save for Later"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

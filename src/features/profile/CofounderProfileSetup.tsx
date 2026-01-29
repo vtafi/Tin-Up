@@ -18,6 +18,7 @@ import {
   ExternalLink,
   Pencil,
 } from "lucide-react";
+import { useToast } from "@/components/common";
 
 const skills = [
   { id: "pm", label: "Product Management", color: "blue" },
@@ -52,13 +53,14 @@ const portfolioItems = [
 export function CofounderProfileSetup() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
 
   // Form state
   const [displayName, setDisplayName] = useState("Nguyen Minh");
   const [headline, setHeadline] = useState("Product Designer");
   const [location, setLocation] = useState("Ho Chi Minh City, VN");
   const [aboutMe, setAboutMe] = useState(
-    "Passionate about fintech and edtech. I have 5 years of experience in product design and I'm looking for a technical co-founder to build the next big thing in Vietnam's startup ecosystem."
+    "Passionate about fintech and edtech. I have 5 years of experience in product design and I'm looking for a technical co-founder to build the next big thing in Vietnam's startup ecosystem.",
   );
   const [selectedSkills, setSelectedSkills] = useState<string[]>([
     "pm",
@@ -70,11 +72,59 @@ export function CofounderProfileSetup() {
 
   const handleSkillRemove = (skillId: string) => {
     setSelectedSkills((prev) => prev.filter((s) => s !== skillId));
+    showToast({
+      type: "info",
+      title: "Skill Removed",
+      message: "Skill has been removed from your profile.",
+      duration: 2000,
+    });
+  };
+
+  const handleAddSkill = (skillLabel: string) => {
+    // Generate a simple ID from the label
+    const skillId = skillLabel.toLowerCase().replace(/\s+/g, "-");
+    if (!selectedSkills.includes(skillId)) {
+      setSelectedSkills((prev) => [...prev, skillId]);
+      showToast({
+        type: "success",
+        title: "Skill Added",
+        message: `${skillLabel} has been added to your profile.`,
+        duration: 2000,
+      });
+    }
+    setSkillSearch("");
   };
 
   const handlePublish = async () => {
+    // Validate form
+    if (!displayName.trim()) {
+      showToast({
+        type: "error",
+        title: "Missing Name",
+        message: "Please enter your display name.",
+      });
+      return;
+    }
+
+    if (selectedSkills.length === 0) {
+      showToast({
+        type: "warning",
+        title: "No Skills Selected",
+        message: "Please add at least one skill to your profile.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    showToast({
+      type: "success",
+      title: "Profile Published!",
+      message: "Your co-founder profile is now live.",
+      duration: 4000,
+    });
+
     navigate("/co-founder/explore");
   };
 
@@ -146,7 +196,10 @@ export function CofounderProfileSetup() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group cursor-pointer">
+            <Link
+              to="/"
+              className="flex items-center gap-3 group cursor-pointer"
+            >
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300" />
                 <div className="relative text-white flex items-center justify-center p-2 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 shadow-inner border border-white/20">
@@ -433,6 +486,7 @@ export function CofounderProfileSetup() {
                   {suggestedSkills.map((skill) => (
                     <button
                       key={skill}
+                      onClick={() => handleAddSkill(skill)}
                       className="px-5 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-all bg-white hover:shadow-md hover:-translate-y-0.5 transform duration-200"
                     >
                       {skill}
@@ -448,7 +502,7 @@ export function CofounderProfileSetup() {
                     <div
                       key={skill.id}
                       className={`flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-b ${getSkillColor(
-                        skill.color
+                        skill.color,
                       )} rounded-2xl border font-bold text-sm hover:-translate-y-0.5 transform duration-200 transition-all cursor-default group`}
                     >
                       <span

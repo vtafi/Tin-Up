@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, Eye, EyeOff, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button, Input } from "@/components/common";
+import { Button, Input, useToast } from "@/components/common";
 
 export function RegisterPage() {
   const [name, setName] = useState("");
@@ -16,6 +16,7 @@ export function RegisterPage() {
 
   const { register, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const passwordStrength = {
     hasMinLength: password.length >= 8,
@@ -32,24 +33,50 @@ export function RegisterPage() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      showToast({
+        type: "error",
+        title: "Password Mismatch",
+        message: "Please make sure your passwords match.",
+      });
       return;
     }
 
     if (!isPasswordStrong) {
       setError("Please create a stronger password");
+      showToast({
+        type: "warning",
+        title: "Weak Password",
+        message: "Please create a stronger password.",
+      });
       return;
     }
 
     if (!acceptTerms) {
       setError("Please accept the terms and conditions");
+      showToast({
+        type: "warning",
+        title: "Terms Required",
+        message: "Please accept the terms and conditions.",
+      });
       return;
     }
 
     try {
       await register(email, password, name);
+      showToast({
+        type: "success",
+        title: "Account Created!",
+        message: "Now select your role to get started.",
+        duration: 3000,
+      });
       navigate("/auth/role-selection");
     } catch {
       setError("Registration failed. Please try again.");
+      showToast({
+        type: "error",
+        title: "Registration Failed",
+        message: "Please try again later.",
+      });
     }
   };
 

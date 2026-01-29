@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Bell,
   Cpu,
   Globe,
   Github,
@@ -17,6 +16,7 @@ import {
   DollarSign,
   ExternalLink,
 } from "lucide-react";
+import { NotificationDropdown, UserAvatarDropdown } from "@/components/common";
 
 const profile = {
   name: "Minh Nguyen",
@@ -123,16 +123,9 @@ export function CofounderProfile() {
             </nav>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-4">
-              <button className="text-slate-500 hover:text-[#135bec] transition-colors">
-                <Bell className="w-6 h-6" />
-              </button>
-              <div
-                className="h-9 w-9 rounded-full bg-cover bg-center ring-2 ring-white shadow-sm"
-                style={{
-                  backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDX242cDPRvmsd2-kKZTkfpAEHGoc8NueLdHy5Yp7zoeiFKYUDjm1d9LLQo4d-ohDgx4PyKdN8HSfQjo3VxZHOcAADPI6zwNcZfsi8kNTmCUh7ft8CiobEu1EQos-pHKMMeCctHBntb3PkU4CNWunLnTz5A8azhRq8ezvGyC1MaGRL_oRs-EJ4WMsx4ndpuWS3UsZE0FylRh_zRZWuBJ1et0mI_ttmTvzd-CjrcJm22pjIjcnS9vsOGVSQnDYleO6IX1WWus5nbH6E')`,
-                }}
-              />
+            <div className="flex items-center gap-3">
+              <NotificationDropdown />
+              <UserAvatarDropdown />
             </div>
           </div>
         </div>

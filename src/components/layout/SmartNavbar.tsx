@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
@@ -19,7 +19,7 @@ import {
   Bell,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Avatar } from "@/components/common";
+import { Avatar, useToast } from "@/components/common";
 import { cn } from "@/utils/cn";
 import type { NavItem, UserRole } from "@/types";
 
@@ -67,6 +67,8 @@ function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, logout, userRole } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -81,6 +83,18 @@ function UserDropdown() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+    showToast({
+      type: "info",
+      title: "Logged Out",
+      message: "You have been successfully logged out.",
+      duration: 3000,
+    });
+    navigate("/");
+  };
 
   if (!user) return null;
 
@@ -157,10 +171,7 @@ function UserDropdown() {
             {/* Logout */}
             <div className="p-2 border-t border-gray-100">
               <button
-                onClick={() => {
-                  logout();
-                  setIsOpen(false);
-                }}
+                onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
               >
                 <LogOut className="w-5 h-5" />
@@ -174,17 +185,139 @@ function UserDropdown() {
   );
 }
 
-// Notification bell
+// Notification bell with dropdown
 function NotificationBell() {
-  const [hasNotifications] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [notifications] = useState([
+    {
+      id: 1,
+      title: "New match!",
+      message: "Minh Nguyen matched your project",
+      time: "2m ago",
+      read: false,
+    },
+    {
+      id: 2,
+      title: "Connection request",
+      message: "Sarah Tran wants to connect",
+      time: "1h ago",
+      read: false,
+    },
+    {
+      id: 3,
+      title: "Profile viewed",
+      message: "Your profile was viewed 5 times",
+      time: "3h ago",
+      read: true,
+    },
+  ]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleMarkAllRead = () => {
+    showToast({
+      type: "success",
+      title: "Notifications Cleared",
+      message: "All notifications marked as read.",
+      duration: 2000,
+    });
+    setIsOpen(false);
+  };
 
   return (
-    <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
-      <Bell className="w-5 h-5 text-gray-600" />
-      {hasNotifications && (
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-      )}
-    </button>
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors"
+      >
+        <Bell className="w-5 h-5 text-gray-600" />
+        {unreadCount > 0 && (
+          <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">
+            {unreadCount}
+          </span>
+        )}
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50"
+          >
+            {/* Header */}
+            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+              <h3 className="font-semibold text-gray-900">Notifications</h3>
+              <button
+                onClick={handleMarkAllRead}
+                className="text-xs text-[#135bec] hover:underline font-medium"
+              >
+                Mark all read
+              </button>
+            </div>
+
+            {/* Notifications list */}
+            <div className="max-h-80 overflow-y-auto">
+              {notifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className={cn(
+                    "p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer",
+                    !notif.read && "bg-blue-50/50",
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={cn(
+                        "w-2 h-2 rounded-full mt-2 shrink-0",
+                        notif.read ? "bg-gray-300" : "bg-[#135bec]",
+                      )}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-gray-900">
+                        {notif.title}
+                      </p>
+                      <p className="text-sm text-gray-500 truncate">
+                        {notif.message}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">{notif.time}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div className="p-3 border-t border-gray-100">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-full text-center text-sm font-medium text-[#135bec] hover:underline"
+              >
+                View all notifications
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
